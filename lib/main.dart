@@ -101,7 +101,7 @@ class MyHomePage extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () {
-                      _count.value = 0;
+                      if (_count.value > 0) _count.value -= 1;
                     },
                     icon: Icon(
                       Icons.remove_circle_outline,
