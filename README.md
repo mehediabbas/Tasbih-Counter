@@ -1,4 +1,4 @@
-# fa1_tasbeeh
+# Tasbih Counter
 
 A new Flutter project.
 
