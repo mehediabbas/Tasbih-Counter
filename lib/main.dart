@@ -1,8 +1,6 @@
+import 'package:fa1_tasbeeh/cubit/counter_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fa1_tasbeeh/bloc/cunter_bloc.dart';
-import 'package:fa1_tasbeeh/bloc/counter_event.dart';
-import 'package:fa1_tasbeeh/bloc/counter_state.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -17,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark(),
       home: MultiBlocProvider(
         providers: [
-          BlocProvider<CounterBloc>(create: (_)=>CounterBloc()),
+          BlocProvider(create: (_)=>CounterCubit()),
         ],
         child:  MyHomePage(),
       ),
@@ -30,7 +28,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final counterBloc=context.read<CounterBloc>();
+    final counterCubit=context.read<CounterCubit>();
 
     return Scaffold(
       backgroundColor: Color.fromRGBO(6, 32, 45, 1),
@@ -54,9 +52,9 @@ class MyHomePage extends StatelessWidget {
 
           SizedBox(height: 20),
 
-          BlocBuilder<CounterBloc,CounterState>(
-            builder: (context, state){
-              return Text("${state.counterValue}",
+          BlocBuilder<CounterCubit,int>(
+            builder: (context, count){
+              return Text("${count}",
                   style: TextStyle(
                     fontSize: 80,
                     fontWeight: FontWeight.bold,
@@ -77,7 +75,7 @@ class MyHomePage extends StatelessWidget {
           SizedBox(height: 5),
           GestureDetector(
             onTap: () {
-              counterBloc.add(Increment());
+              counterCubit.increment();
             },
             child: Container(
               width: 120,
@@ -103,13 +101,13 @@ class MyHomePage extends StatelessWidget {
                 children: [
                   IconButton(
                     onPressed: () {
-                      counterBloc.add(Reset());
+                      counterCubit.reset();
                     },
                     icon: Icon(Icons.refresh, color: Colors.white60, size: 35),
                   ),
                   IconButton(
                     onPressed: () {
-                      counterBloc.add(Decrement());
+                      counterCubit.decrement();
                     },
                     icon: Icon(
                       Icons.remove_circle_outline,
