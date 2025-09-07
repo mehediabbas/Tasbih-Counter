@@ -1,3 +1,3 @@
 # Tasbih Counter
 
-A new Flutter project on Tasbih Counter.
+A flutter project on Tasbih Counter using flutter BLoC.

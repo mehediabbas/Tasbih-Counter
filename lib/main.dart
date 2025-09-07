@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fa1_tasbeeh/bloc/cunter_bloc.dart';
+import 'package:fa1_tasbeeh/bloc/counter_event.dart';
+import 'package:fa1_tasbeeh/bloc/counter_state.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -12,19 +15,23 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
-      home: MyHomePage(title: "Tasbih Counter"),
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider<CounterBloc>(create: (_)=>CounterBloc()),
+        ],
+        child:  MyHomePage(),
+      ),
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
-
-  static final ValueNotifier<int> _count = ValueNotifier<int>(0);
 
   @override
   Widget build(BuildContext context) {
+
+    final counterBloc=context.read<CounterBloc>();
+
     return Scaffold(
       backgroundColor: Color.fromRGBO(6, 32, 45, 1),
 
@@ -46,16 +53,17 @@ class MyHomePage extends StatelessWidget {
           ),
 
           SizedBox(height: 20),
-          ValueListenableBuilder(
-            valueListenable: _count,
-            builder: (context, value, _) => Text(
-              value.toString().padLeft(3, '0'),
-              style: const TextStyle(
-                fontSize: 80,
-                fontWeight: FontWeight.bold,
-                color: Colors.yellow,
-              ),
-            ),
+
+          BlocBuilder<CounterBloc,CounterState>(
+            builder: (context, state){
+              return Text("${state.counterValue}",
+                  style: TextStyle(
+                    fontSize: 80,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.yellow,
+                  )
+              );
+            },
           ),
 
           SizedBox(height: 20),
@@ -69,7 +77,7 @@ class MyHomePage extends StatelessWidget {
           SizedBox(height: 5),
           GestureDetector(
             onTap: () {
-              if (_count.value < 999) _count.value += 1;
+              counterBloc.add(Increment());
             },
             child: Container(
               width: 120,
@@ -95,13 +103,13 @@ class MyHomePage extends StatelessWidget {
                 children: [
                   IconButton(
                     onPressed: () {
-                      _count.value = 0;
+                      counterBloc.add(Reset());
                     },
                     icon: Icon(Icons.refresh, color: Colors.white60, size: 35),
                   ),
                   IconButton(
                     onPressed: () {
-                      if (_count.value > 0) _count.value -= 1;
+                      counterBloc.add(Decrement());
                     },
                     icon: Icon(
                       Icons.remove_circle_outline,
@@ -113,7 +121,7 @@ class MyHomePage extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 2),
+          SizedBox(height: 20),
         ],
       ),
     );
